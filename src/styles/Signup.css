@@ -1,0 +1,147 @@
+body{
+    margin: 0px;
+    padding: 0px;
+    font-family: "Open Sans", sans-serif;
+}
+.signup-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(0, 0, 0, 0.1);
+    /* height: 100vh;  */
+}
+
+.signup-container {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 50px;
+    width: 400px;
+    margin:20px;
+    
+    color: #373468;
+    border-radius: 20px;
+    border-style: none;
+    box-shadow: 0px 4px 20px rgb(0, 0, 0, 0.3);
+}
+
+.signup-container h1 {
+    font-size: 27px;
+    color: #1972ba;
+    margin-bottom: -5px;
+}
+
+.signup-container form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.signup-container input {
+    border: 1px solid rgb(169, 166, 166);
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.525);
+    outline: none;
+    font-family: "Open Sans", serif;
+    font-size: 12px;
+    margin: 5px 0px 15px  0px;
+    padding: 7px;
+}
+
+.signup-container label{
+    font-size: 13px;
+    font-weight: 500;
+} 
+
+.signup-container button {
+    font-family: "Open Sans", serif;
+    background:linear-gradient(to right, #13cec8, #1f78b4) ;
+    width: 100%;
+    color: white;
+    border: none;
+    font-size: 13px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 1s ease, transform 0.5s ease;
+    padding: 10px;
+    margin: 30px 0px 20px 0px;
+}
+
+.signup-container button:hover{
+    background:linear-gradient(to right, #1f78b4, #13cec8) ;
+    transform: scale(1.05);
+}
+
+.signup-container h1, h2{
+    display: flex;
+    justify-content: center;
+}
+.signup-password{
+    display: flex;
+    align-items: center;
+    gap:5px;
+}
+.signup-toggle{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.switch{
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 25px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #1f78b4;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(25px);
+  }
+   
+  .signup-password-toggle{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+@media screen and (max-width:400px) {
+    .signup-container{
+        width: 90%;
+        padding: 30px;
+    }
+    
+}

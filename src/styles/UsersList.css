@@ -1,0 +1,98 @@
+.users-list {
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    margin-bottom: 100px;
+  }
+  
+  .users-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .search-container input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+  }
+  
+  .filter-icon {
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .search-container select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background: #f4f4f4;
+  }
+  
+  .admin-role {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .view-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 5px;
+  }
+  
+  .view-btn:hover {
+    background: #0056b3;
+  }
+  
+  .activate-btn {
+    background: green;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .deactivate-btn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .activate-btn:hover {
+    background: darkgreen;
+  }
+  
+  .deactivate-btn:hover {
+    background: darkred;
+  }
+  

@@ -1,0 +1,192 @@
+.user-appointment {
+    width: 90%;
+    max-width: 1450px;
+    margin: 50px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    font-family: "Open Sans", sans-serif;
+}
+
+/* Heading */
+.heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0px 0px 20px 0px;
+    padding: 0px 20px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background: linear-gradient(to right, #13cec8, #1f78b4);
+    color: white;
+}
+
+/* Filters Section */
+.filters {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 5px;
+}
+
+.filter-item label {
+    font-weight: bold;
+    color: #333;
+}
+
+.filter-item select,
+.filter-item input {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    width: 100%;
+    font-family: "Open Sans", sans-serif;
+    cursor: pointer;
+}
+
+/* Filter Buttons */
+.filter-buttons {
+    display: flex;
+    padding: 20px;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filter-buttons button {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: "Open Sans", sans-serif;
+    background-color: white;
+    color: #1f78b4;
+    border: 1px solid #1f78b4;
+    font-weight: 600;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover and Click Effects for Filter Buttons */
+.filter-buttons button:hover {
+    background-color: #1f78b4;
+    color: white;
+}
+
+.filter-buttons button:active {
+    transform: scale(0.95);
+}
+
+/* Table */
+.user-appointment .table {
+    overflow-x: auto;
+    padding: 20px;
+    border-radius: 10px;
+    display: block;
+}
+
+.user-appointment table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.user-appointment th {
+    padding: 12px;
+    border: 3px solid #ddd;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.user-appointment td {
+    font-size: 14px;
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+.user-appointment td label {
+    padding: 5px;
+    width: 90%;
+    border-radius: 5px;
+    color: white;
+    font-weight: 500;
+    font-family: "Open Sans", sans-serif;
+}
+
+/* Actions */
+.user-appointment .actions {
+    display: flex;
+    gap: 5px;
+    font-family: "Open Sans", sans-serif;
+}
+
+.user-appointment .actions button {
+    background-color: white;
+    color: #1f78b4;
+    border: 1px solid #1f78b4;
+    font-weight: 600;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover and Click Effects for Action Buttons */
+.user-appointment .actions button:hover {
+    background-color: #1f78b4;
+    color: white;
+}
+
+.user-appointment .actions button:active {
+    transform: scale(0.95);
+}
+
+/* Table Action Buttons */
+.user-appointment td button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover and Click Effects for Table Buttons */
+.user-appointment td button:hover {
+    background-color: #1f78b4;
+    color: white;
+}
+
+.user-appointment td button:active {
+    transform: scale(0.95);
+}
+
+/* Report Buttons */
+.report-btn{
+    background: linear-gradient(to right, #13cec8, #1f78b4);
+    color: white;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover and Click Effects for Report and Download Buttons */
+.report-btn:hover {
+    background: linear-gradient(to right, #0da7a2, #166396);
+    transform: scale(1.05);
+}
+
+.report-btn:active{
+    transform: scale(0.95);
+    background: linear-gradient(to right, #0b8b87, #145580);
+}

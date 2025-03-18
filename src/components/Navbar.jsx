@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import '../styles/Navbar.css'
 import { Link } from 'react-router-dom'
 
@@ -8,10 +8,10 @@ export default function Navbar() {
         <div>
             <nav>
                 <div className='nav-content'>
-                    <img src='health_plus.png' />
+                    <img src='health_plus.png' alt='health-plus icon' />
                     <h1>
-                        <span style={{ color: '#3dc4d8' }}>Medi</span>
-                        <span style={{ color: '#8c8b8b' }}>Care</span></h1>
+                        <span style={{ color: '#373468' }}>Medi</span>
+                        <span style={{ color: '#3dc4d8' }}>Care</span></h1>
                 </div>
 
                 <ul>

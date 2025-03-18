@@ -1,0 +1,142 @@
+.doctor-dashboard {
+    width: 90%;
+    max-width: 1450px;
+    margin: 60px auto;
+    font-family: "Open Sans", sans-serif;
+}
+
+/* Header Styles */
+.doctor-header {
+    width: 100%;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+.doctor-header nav ul {
+    display: flex;
+    list-style: none;
+    padding: 20px;
+    gap: 20px;
+}
+
+.doctor-header nav ul li {
+    margin: 0 15px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #08283d;
+    cursor: pointer;
+    display: flex;
+    gap: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.doctor-header nav ul li:hover {
+    text-decoration: underline;
+    color: rgb(113, 170, 189);
+}
+
+/* Dashboard Cards */
+.dashboard-cards {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    gap: 20px;
+}
+
+.card {
+    flex: 1;
+    border: 1px solid grey;
+    color: #1f78b4;
+    text-align: center;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card svg {
+    font-size: 40px;
+    margin: 20px;
+}
+
+.card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.filters {
+    display: flex;
+    /* flex-direction: column; */
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    padding: 8px;
+    width: 300px;
+}
+
+.search-icon {
+    color: #555;
+    padding-left: 5px;
+    cursor: pointer;
+}
+
+.search-container input {
+    outline: none;
+    flex-grow: 1;
+    font-size: 14px;
+}
+
+.filter-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.filter-buttons button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.filter-buttons button:hover {
+    background-color: #0056b3;
+}
+
+
+/* Table */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+.no-data {
+    text-align: center;
+    font-weight: bold;
+    color: #666;
+    padding: 20px;
+}

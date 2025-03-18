@@ -1,0 +1,104 @@
+/* 🔹 Doctors List Container */
+.doctors-list {
+    margin: 30px auto;
+    width: 80%;
+    text-align: center;
+}
+
+/* 🔹 Heading Style */
+.doctors-list h2 {
+    
+    font-size: 28px;
+    margin-bottom: 70px;
+}
+
+/* 🔹 Doctors Container */
+.doctors-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* 🔹 Doctor Card */
+.doctor-card {
+    background: white;
+    padding: 20px;
+    width: 280px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* 🔹 Hover Effect */
+.doctor-card:hover {
+    transform: translateY(-5px);
+}
+
+/* 🔹 Doctor Profile Image */
+.doctor-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 3px solid #13cec8;
+}
+
+/* 🔹 Doctor Name */
+.doctor-card h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* 🔹 Doctor Info */
+.doctor-card p {
+    font-size: 14px;
+    color: #666;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+/* 🔹 Specialization Styling */
+.specialization {
+    font-weight: bold;
+    color: #1f78b4;
+}
+
+/* 🔹 View Profile Button */
+.view-profile-btn {
+    background-color: #1f78b4;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-family: "Open Sans", sans-serif;
+
+}
+
+.view-profile-btn:hover {
+    background-color: #125a85;
+}
+
+/* 🔹 No Data Message */
+.no-data {
+    font-size: 16px;
+    color: #999;
+    margin-top: 20px;
+}
+
+/* 🔹 Responsive */
+@media screen and (max-width: 768px) {
+    .doctors-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
