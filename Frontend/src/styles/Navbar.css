@@ -1,0 +1,116 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: "Open Sans", sans-serif;
+}
+
+nav {
+    background-color: rgba(255, 254, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 40px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    /* position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; */
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-content img {
+    height: 40px;
+  width: auto;
+
+}
+
+.nav-content h1 {
+    font-size: 21px;
+    margin: 0;
+  font-weight: 700;
+}
+
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+nav li a {
+    text-decoration: none;
+    padding: 10px;
+    color: rgb(107, 106, 106);
+    font-size: 14px;
+    font-family: "Open Sans", sans-serif;
+
+}
+
+nav li a:hover {
+    color: #11558c;
+    background-color: rgba(31, 120, 180, 0.1);
+}
+
+.navbar-dropdown-heading p {
+    color: rgb(107, 106, 106);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.navbar-dropdown {
+    position: relative;
+    cursor: pointer;
+
+
+}
+
+.navbar-dropdown-heading {
+    display: flex;
+    align-items: center;
+    
+}
+
+.navbar-dropdown-content {
+    position: absolute;
+    background-color: white;
+    transition: background 1s ease, transform 0.5s ease;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    top: 40px;
+    right: 0;
+    border-radius: 5px;
+    display: none;
+}
+
+.navbar-dropdown-content a,
+.navbar-dropdown-content button{
+    text-decoration: none;
+    color: #8c8b8b;
+    font-size: 14px;
+    padding: 5px 15px;
+    display: block;
+    border: none;
+}
+
+.navbar-dropdown:hover .navbar-dropdown-content,
+.navbar-dropdown:hover .navbar-dropdown-arrow {
+
+    display: block;
+}
+
+.navbar-dropdown-content a:hover,
+.navbar-dropdown-content button:hover {
+    color: white;
+    font-weight: bolder;
+    border-radius: 5px;
+    background: linear-gradient(to right, #1f78b4, #13cec8);
+    transform: scale(1.05);
+}

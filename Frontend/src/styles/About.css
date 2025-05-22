@@ -1,0 +1,163 @@
+body{
+    font-family: "Open Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header Section */
+.header {
+    text-align: center;
+    background: linear-gradient(to right, #1f78b4, #13cec8);
+    color: white;
+    padding: 70px;
+    /* margin-top: 40px; */
+}
+
+.header h1 {
+    font-size: 37px;
+    /* margin-top: 10px; */
+    color: #012a45;
+}
+
+.header p {
+    font-size: 16px;
+    color: white;
+    font-weight: 100;
+    margin-top: -25px;
+}
+
+.middle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 50px 150px;
+}
+
+.middle img {
+    width: 500px;
+    height: 400px;
+    border-radius: 10px;
+    /* box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2); */
+}
+
+.ourstory {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.ourstory h2 {
+    font-size: 29px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    
+}
+
+.ourstory p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+    font-weight: 400;
+}
+
+
+.corevalues-container {
+    padding: 50px 20px;
+    border-radius: 10px;
+    box-shadow: 5px 10px 25px rgba(0, 0, 0, 0.2);
+    /* max-width: 1000px; */
+    margin:100px;
+}
+
+.corevalues h2 {
+    text-align: center;
+    font-size: 29px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.corevalues ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.corevalues ul li {
+    text-align: center;
+    width: 300px;
+    padding: 20px;
+    /* background: rgba(31, 120, 180, 0.1); */
+    border-radius: 10px;
+    /* box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); */
+    transition: transform 0.3s ease-in-out;
+}
+
+.corevalues ul li:hover {
+    transform: scale(1.05);
+}
+
+.corevalues ul li h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 10px;
+    /* color: #1f78b4; */
+}
+
+.corevalues ul li p {
+    font-size: 14px;
+    font-weight: 400;
+    color: #666;
+    margin-top: 5px;
+}
+
+.leadership {
+    margin-top: 50px;
+}
+
+.leadership h2 {
+    text-align: center;
+     font-size: 29px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.leadership ul {
+    display: flex;
+    justify-content: space-evenly;
+    list-style: none;
+}
+
+.leadership ul li {
+    text-align: center;
+}
+
+.leadership ul li img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.leadership ul li h4 {
+    /* font-size: 18px; */
+    margin-top: 10px;
+   
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .middle {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .middle img {
+        width: 300px;
+    }
+
+    .corevalues ul, .leadership ul {
+        flex-direction: column;
+        align-items: center;
+    }
+}
