@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "../styles/AppointmentCalendar.css";
 
 export default function AppointmentCalendar() {
-    const [events, setEvents] = useState([
-        { id: "1", title: "John Doe - Cardiology", date: "2025-03-15", nic: "987654321V", time: "10:00 AM" },
-        { id: "2", title: "Jane Smith - Neurology", date: "2025-03-18", nic: "123456789V", time: "2:00 PM" }
-    ]);
+    const [events, setEvents] = useState([]);
+    const [doctorId, setDoctorId] = useState("684d58f5ddd07119fc68c621"); // Set current doctor ID
 
     // Reschedule State
     const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
@@ -21,13 +20,45 @@ export default function AppointmentCalendar() {
     const [leaveDate, setLeaveDate] = useState("");
     const [leaveReason, setLeaveReason] = useState("");
 
-    // Open Reschedule Modal
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // 1. Fetch appointments
+                const appointmentRes = await axios.get("http://localhost:5000/api/appointments");
+                const appointments = appointmentRes.data.map(appt => ({
+                    id: appt._id,
+                    title: `${appt.firstName} ${appt.lastName} - ${appt.department?.name || ""}`,
+                    date: appt.appointmentDate,
+                    nic: appt.NIC,
+                    time: appt.timeSlot,
+                    isAppointment: true
+                }));
+
+                // 2. Fetch doctor leaves
+                const leaveRes = await axios.get(`http://localhost:5000/api/doctors/${doctorId}/leaves`);
+                const leaves = leaveRes.data.map((leave, index) => ({
+                    id: `leave-${index}`,
+                    title: "🚫 Leave",
+                    date: leave.leaveDate,
+                    reason: leave.leaveReason,
+                    isAppointment: false
+                }));
+
+                setEvents([...appointments, ...leaves]);
+            } catch (err) {
+                console.error("Error fetching data:", err);
+            }
+        };
+
+        fetchData();
+    }, [doctorId]);
+
+    // Modal handlers
     const openRescheduleModal = (appointment) => {
         setSelectedAppointment(appointment);
         setRescheduleModalOpen(true);
     };
 
-    // Close Reschedule Modal
     const closeRescheduleModal = () => {
         setRescheduleModalOpen(false);
         setSelectedAppointment(null);
@@ -35,12 +66,8 @@ export default function AppointmentCalendar() {
         setNewTime("");
     };
 
-    // Confirm Reschedule
     const confirmReschedule = () => {
-        if (!newDate || !newTime) {
-            alert("Please select both new date and time.");
-            return;
-        }
+        if (!newDate || !newTime) return alert("Select both new date and time.");
 
         setEvents(events.map(event =>
             event.id === selectedAppointment.id
@@ -52,36 +79,44 @@ export default function AppointmentCalendar() {
         closeRescheduleModal();
     };
 
-    // Open Leave Modal
-    const openLeaveModal = () => {
-        setLeaveModalOpen(true);
-    };
-
-    // Close Leave Modal
+    const openLeaveModal = () => setLeaveModalOpen(true);
     const closeLeaveModal = () => {
         setLeaveModalOpen(false);
         setLeaveDate("");
         setLeaveReason("");
     };
 
-    // Confirm Leave
-    const confirmLeave = () => {
-        if (!leaveDate || !leaveReason) {
-            alert("Please enter both date and reason for leave.");
-            return;
+    const confirmLeave = async () => {
+        if (!leaveDate || !leaveReason) return alert("Enter both date and reason.");
+
+        try {
+            await axios.post(`http://localhost:5000/api/doctors/${doctorId}/leaves`, {
+                leaveDate,
+                leaveReason
+            });
+
+            setEvents(prev => [
+                ...prev,
+                {
+                    id: `leave-${Date.now()}`,
+                    title: "🚫 Leave",
+                    date: leaveDate,
+                    reason: leaveReason,
+                    isAppointment: false
+                }
+            ]);
+            alert("Leave added successfully.");
+            closeLeaveModal();
+        } catch (err) {
+            console.error("Error adding leave:", err);
+            alert("Error adding leave.");
         }
-
-        setEvents([...events, { id: `L${leaveDate}`, title: "Leave", date: leaveDate, reason: leaveReason }]);
-
-        alert(`Leave marked for ${leaveDate}: ${leaveReason}`);
-        closeLeaveModal();
     };
 
     return (
         <div className="calendar-container">
             <h1>Appointment Calendar</h1>
 
-            {/* Buttons for Actions */}
             <div className="actions">
                 <button className="leave-btn" onClick={openLeaveModal}>Add Leave</button>
             </div>
@@ -90,23 +125,22 @@ export default function AppointmentCalendar() {
                 plugins={[dayGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth"
                 events={events.map(event => ({
-                    title: event.title.includes("Leave") ? `🚫 ${event.title}` : `${event.title} (${event.time})`,
-                    date: event.date,
+                    title: event.title + (event.time ? ` (${event.time})` : ""),
+                    date: event.date
                 }))}
             />
-
 
             {/* Appointment List */}
             <div className="appointment-list">
                 <h2>Upcoming Appointments</h2>
-                {events.map((event) => (
+                {events.map(event => (
                     <div key={event.id} className="appointment-card">
                         <h3>{event.title}</h3>
                         {event.nic && <p><b>NIC:</b> {event.nic}</p>}
-                        <p><b>Date: </b> {event.date}</p>
+                        <p><b>Date:</b> {event.date}</p>
                         {event.time && <p><b>Time:</b> {event.time}</p>}
                         {event.reason && <p><b>Reason:</b> {event.reason}</p>}
-                        {!event.title.includes("Leave") && (
+                        {event.isAppointment && (
                             <button onClick={() => openRescheduleModal(event)}>Reschedule</button>
                         )}
                     </div>
@@ -118,16 +152,16 @@ export default function AppointmentCalendar() {
                 <div className="modal-overlay">
                     <div className="modal">
                         <h2>Reschedule Appointment</h2>
-                        <p><b>Patient</b> {selectedAppointment.title}</p>
-                        <p><b>NIC</b> {selectedAppointment.nic}</p>
-                        <p><b>Current Date</b> {selectedAppointment.date}</p>
-                        <p><b>Current Time slot</b> {selectedAppointment.time}</p>
+                        <p><b>Patient:</b> {selectedAppointment.title}</p>
+                        <p><b>NIC:</b> {selectedAppointment.nic}</p>
+                        <p><b>Current Date:</b> {selectedAppointment.date}</p>
+                        <p><b>Current Time:</b> {selectedAppointment.time}</p>
 
-                        <label>Select New Date</label>
-                        <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
+                        <label>New Date</label>
+                        <input type="date" value={newDate} onChange={e => setNewDate(e.target.value)} />
 
-                        <label>Select New Time Slot</label>
-                        <input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)} />
+                        <label>New Time Slot</label>
+                        <input type="time" value={newTime} onChange={e => setNewTime(e.target.value)} />
 
                         <div className="modal-buttons">
                             <button onClick={confirmReschedule} className="confirm-btn">Reschedule</button>
@@ -144,8 +178,7 @@ export default function AppointmentCalendar() {
                         <h2>Add Leave</h2>
                         <label>Select Date</label>
                         <input type="date" value={leaveDate} onChange={(e) => setLeaveDate(e.target.value)} />
-
-                        <label>Reason for leave</label>
+                        <label>Reason</label>
                         <input type="text" value={leaveReason} onChange={(e) => setLeaveReason(e.target.value)} />
 
                         <div className="modal-buttons">

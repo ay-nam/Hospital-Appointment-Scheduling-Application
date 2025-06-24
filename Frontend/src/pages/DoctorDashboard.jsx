@@ -19,20 +19,31 @@ export default function DoctorDashboard() {
     const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
-        axios
-            .get("http://localhost:5000/api/doctor/stats")
-            .then((response) => {
-                setPatientsCount(response.data.totalPatients);
-                setAppointmentsCount(response.data.totalAppointments);
-                setReportsCount(response.data.totalReports);
-            })
-            .catch((error) => console.error("Error fetching stats:", error));
+        const fetchStats = async () => {
+            try {
+                const [patientsRes, appointmentsRes, reportsRes] = await Promise.all([
+                    axios.get("http://localhost:5000/api/patients/count"),
+                    axios.get("http://localhost:5000/api/appointments/count"),
+                    axios.get("http://localhost:5000/api/reports/count")
+                ]);
 
+                setPatientsCount(patientsRes.data.totalPatients);
+                setAppointmentsCount(appointmentsRes.data.totalAppointments);
+                setReportsCount(reportsRes.data.totalReports);
+            } catch (error) {
+                console.error("Error fetching dashboard stats:", error);
+            }
+        };
+
+        fetchStats();
+
+        // Fetch appointment data for the table
         axios
-            .get("http://localhost:5000/api/doctor/appointments")
+            .get("http://localhost:5000/api/appointments")
             .then((response) => setAppointments(response.data))
             .catch((error) => console.error("Error fetching appointments:", error));
     }, []);
+
 
     const handleFilterChange = (e) => {
         setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -43,14 +54,16 @@ export default function DoctorDashboard() {
     };
 
     const filteredAppointments = appointments.filter((appointment) => {
+        const fullName = `${appointment.firstName} ${appointment.lastName}`;
         return (
-            (filters.searchQuery === "" ||
-                appointment.patientName.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-                appointment.email.toLowerCase().includes(filters.searchQuery.toLowerCase())) &&
-            (filters.status === "" || appointment.status === filters.status) &&
-            (filters.date === "" || appointment.date === filters.date)
+          (filters.searchQuery === "" ||
+            fullName.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+            appointment.email.toLowerCase().includes(filters.searchQuery.toLowerCase())) &&
+          (filters.status === "" || appointment.status === filters.status) &&
+          (filters.date === "" || appointment.appointmentDate.startsWith(filters.date))
         );
-    });
+      });
+      
 
     return (
         <>
@@ -67,8 +80,8 @@ export default function DoctorDashboard() {
             </header>
 
             {activeTab === "reports" && <Reports />}
-            {activeTab === "appointments" && <AppointmentCalendar/>}
-            {activeTab === "dashboard" && <DoctorAppointmentAnalysis/>}
+            {activeTab === "appointments" && <AppointmentCalendar />}
+            {activeTab === "dashboard" && <DoctorAppointmentAnalysis />}
 
 
             {/* Doctor Dashboard Content */}
@@ -97,7 +110,7 @@ export default function DoctorDashboard() {
 
                     {/* Filters Section */}
                     <div className="filters">
-                       
+
                         <div className="search-container">
                             <FaSearch className="search-icon" />
                             <input
@@ -109,7 +122,7 @@ export default function DoctorDashboard() {
                             />
                         </div>
 
-                      
+
                         <div className="filter-row">
                             <div className="filter-item">
                                 <label>Status</label>
@@ -150,18 +163,21 @@ export default function DoctorDashboard() {
                             </thead>
                             <tbody>
                                 {filteredAppointments.length > 0 ? (
-                                    filteredAppointments.map((appointment) => (
-                                        <tr key={appointment.id}>
-                                            <td>{appointment.patientName}</td>
-                                            <td>{appointment.gender}</td>
-                                            <td>{appointment.email}</td>
-                                            <td>{appointment.mobileNumber}</td>
-                                            <td>{appointment.date}</td>
-                                            <td>{appointment.time}</td>
-                                            <td>{appointment.status}</td>
-                                            <td>{appointment.visited ? "Yes" : "No"}</td>
-                                        </tr>
-                                    ))
+                                    filteredAppointments.map((appointment) => {
+                                        const fullName = `${appointment.firstName || ""} ${appointment.lastName || ""}`;
+                                        return (
+                                            <tr key={appointment._id}>
+                                                <td>{fullName}</td>
+                                                <td>{appointment.gender}</td>
+                                                <td>{appointment.email}</td>
+                                                <td>{appointment.mobile}</td>
+                                                <td>{new Date(appointment.appointmentDate).toLocaleDateString()}</td>
+                                                <td>{appointment.timeSlot}</td>
+                                                <td>{appointment.status}</td>
+                                                <td>{appointment.visited ? "Yes" : "No"}</td>
+                                            </tr>
+                                        );
+                                    })
                                 ) : (
                                     <tr><td colSpan="8" className="no-data">No Appointments Found</td></tr>
                                 )}

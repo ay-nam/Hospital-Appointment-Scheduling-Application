@@ -44,7 +44,11 @@ export default function AdminSignup() {
       
       if (response.data) {
         alert(`${switchRole} registration successful!`);
-        navigate('/login');
+        if (formData.role === 'doctor') {
+          navigate('/add-doctor'); 
+        } else {
+          navigate('/login');
+        }
       }
     } catch (error) {
       setError(error.response?.data?.message || 'Registration failed');

@@ -1,41 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend } from "chart.js";
 import "../styles/DoctorAppointmentAnalysis.css";
-// Register Chart.js components
+
 ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend);
 
 const DoctorAppointmentAnalysis = () => {
-    // State for date filtering
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [barCounts, setBarCounts] = useState([]);
+    const [statusCounts, setStatusCounts] = useState([]);
+    const [totalAppointments, setTotalAppointments] = useState(0);
 
-    // Sample data for appointments per day
+    useEffect(() => {
+        fetchChartData();
+    }, []);
+
+    const fetchChartData = async () => {
+        try {
+            const [dailyRes, statusRes] = await Promise.all([
+                axios.get("http://localhost:5000/api/appointments/stats/daily"),
+                axios.get("http://localhost:5000/api/appointments/stats/status")
+            ]);
+
+            setBarCounts(dailyRes.data);
+
+            let total = 0;
+            statusRes.data.forEach(s => total += s.count);
+            setTotalAppointments(total);
+            setStatusCounts(statusRes.data);
+        } catch (error) {
+            console.error("Error loading chart data:", error);
+        }
+    };
+
     const barData = {
-        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         datasets: [
             {
                 label: "Appointments",
-                data: [5, 8, 6, 10, 7, 4, 3], // Example data
+                data: barCounts,
                 backgroundColor: "#007bff",
             },
         ],
     };
 
-    const barOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            y: { beginAtZero: true },
-        },
-    };
-
-    // Sample data for appointment status distribution
     const pieData = {
-        labels: ["Completed", "Pending", "Cancelled"],
+        labels: statusCounts.map(s => s._id),
         datasets: [
             {
-                data: [50, 30, 20], // Example percentage values
+                data: statusCounts.map(s => s.count),
                 backgroundColor: ["#28a745", "#ffc107", "#dc3545"],
             },
         ],
@@ -45,12 +60,10 @@ const DoctorAppointmentAnalysis = () => {
         <div className="doctor-analysis-container">
             <h2>Doctor's Appointment Analysis</h2>
 
-            {/* Total Appointments */}
             <div className="summary-box">
-                <h3>Total Appointments: <span>85</span></h3>
+                <h3>Total Appointments: <span>{totalAppointments}</span></h3>
             </div>
 
-            {/* Date Range Filter */}
             <div className="date-filter">
                 <label>Start Date</label>
                 <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
@@ -58,14 +71,14 @@ const DoctorAppointmentAnalysis = () => {
                 <label>End Date</label>
                 <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
 
-                <button className="filter-btn">Apply Filter</button>
+                <button className="filter-btn" disabled>Apply Filter</button> {/* filter logic optional */}
             </div>
 
             <div className="chart-container">
                 <div className="chart-box">
                     <h3>Appointments Per Day</h3>
                     <div className="chart">
-                        <Bar data={barData} options={barOptions} />
+                        <Bar data={barData} options={{ responsive: true, maintainAspectRatio: false }} />
                     </div>
                 </div>
 

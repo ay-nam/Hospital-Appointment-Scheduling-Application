@@ -18,7 +18,7 @@ const authenticateUser = async (req, res, next) => {
         req.user = user; // Attach user details to request
         next();
     } catch (error) {
-        return res.status(403).json({ message: "Forbidden: Invalid token" });
+        return res.status(403).json({ message: "Forbidden: Invalid token", error: error.message });
     }
 };
 

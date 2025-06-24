@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/AppointmentForm.css';
+import axios from 'axios';
+import { getUserIdFromToken } from '../utils/auth';
 
 export default function AppointmentForm() {
   const [formData, setFormData] = useState({
@@ -8,22 +10,42 @@ export default function AppointmentForm() {
     email: '',
     mobile: '',
     dob: '',
-    nic: '',
+    NIC: '',
     gender: '',
     department: '',
     doctor: '',
+    address: ''
   });
 
   const [errors, setErrors] = useState({});
 
-  const departments = ['Cardiology', 'Orthopedics', 'Pediatrics', 'Dermatology', 'General Medicine'];
-  const doctors = {
-    Cardiology: ['Dr. John Smith', 'Dr. Alice Johnson'],
-    Orthopedics: ['Dr. Robert Brown', 'Dr. Sarah Lee'],
-    Pediatrics: ['Dr. Mark Wilson', 'Dr. Emma Davis'],
-    Dermatology: ['Dr. Nancy White', 'Dr. Daniel Martin'],
-    'General Medicine': ['Dr. Sophia Allen', 'Dr. William Harris'],
-  };
+  const [departments, setDepartments] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [deptRes, docRes] = await Promise.all([
+          axios.get('http://localhost:5000/api/departments'),
+          axios.get('http://localhost:5000/api/doctors')
+        ]);
+        setDepartments(deptRes.data);
+        setDoctors(docRes.data);
+        console.log("Doctors from backend:", docRes.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const [userId, setUserId] = useState('');
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/auth/user-id', { withCredentials: true })
+      .then(res => setUserId(res.data.id))
+      .catch(err => console.error(err));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,21 +60,52 @@ export default function AppointmentForm() {
     if (!formData.email.includes('@')) newErrors.email = 'Invalid email address';
     if (formData.mobile.length < 10) newErrors.mobile = 'Enter a valid mobile number';
     if (!formData.dob) newErrors.dob = 'Date of Birth is required';
-    if (!formData.nic) newErrors.nic = 'NIC/Aadhar number is required';
+    if (!formData.NIC) newErrors.NIC = 'NIC/Aadhar number is required';
     if (!formData.gender) newErrors.gender = 'Please select a gender';
     if (!formData.department) newErrors.department = 'Please select a department';
     if (!formData.doctor) newErrors.doctor = 'Please select a preferred doctor';
+    if (!formData.address) newErrors.address = 'Address is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      alert('Appointment Scheduled Successfully!');
-      console.log('Appointment Data:', formData);
-    }
+      try {
+        if (!userId) {
+          alert("User not logged in. Please log in again.");
+          return;
+        }
+        const response = await axios.post('http://localhost:5000/api/appointments', {
+          ...formData,
+          appointmentDate: new Date().toISOString(),
+          timeSlot: '10:00 AM - 11:00 AM',
+          gender: formData.gender.toLowerCase(),
+          uploadedBy: userId
+        }, { withCredentials: true });
+        alert('Appointment Scheduled Successfully :)');
+        console.log('Appointment Data:', response.data);
+
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          mobile: '',
+          dob: '',
+          NIC: '',
+          gender: '',
+          department: '',
+          doctor: '',
+          address: ''
+        });
+      }
+      catch (error) {
+        console.error("Failed to schedule Appointment:", error.response?.data || error.message);
+        alert('Failed to schedule Appointment. Please try again later :(');
+      }
+    };
   };
 
   return (
@@ -61,19 +114,19 @@ export default function AppointmentForm() {
       <form className='appointment-form' onSubmit={handleSubmit}>
 
         <label>Patient First Name</label>
-        <input type='text' name='firstName' value={formData.firstName} onChange={handleChange} placeholder='Enter your first name'/>
+        <input type='text' name='firstName' value={formData.firstName} onChange={handleChange} placeholder='Enter your first name' />
         {errors.firstName && <span className='error'>{errors.firstName}</span>}
 
         <label>Patient Last Name</label>
-        <input type='text' name='lastName' value={formData.lastName} onChange={handleChange} placeholder='Enter your last name'/>
+        <input type='text' name='lastName' value={formData.lastName} onChange={handleChange} placeholder='Enter your last name' />
         {errors.lastName && <span className='error'>{errors.lastName}</span>}
 
         <label>Email</label>
-        <input type='email' name='email' value={formData.email} onChange={handleChange} placeholder='Enter your email'/>
+        <input type='email' name='email' value={formData.email} onChange={handleChange} placeholder='Enter your email' />
         {errors.email && <span className='error'>{errors.email}</span>}
 
         <label>Mobile Number</label>
-        <input type='text' name='mobile' value={formData.mobile} onChange={handleChange} placeholder='Enter your mobile number'/>
+        <input type='text' name='mobile' value={formData.mobile} onChange={handleChange} placeholder='Enter your mobile number' />
         {errors.mobile && <span className='error'>{errors.mobile}</span>}
 
         <label>Date of Birth</label>
@@ -81,8 +134,8 @@ export default function AppointmentForm() {
         {errors.dob && <span className='error'>{errors.dob}</span>}
 
         <label>NIC (Aadhar number)</label>
-        <input type='text' name='nic' value={formData.nic} onChange={handleChange} placeholder='Enter your NIC'/>
-        {errors.nic && <span className='error'>{errors.nic}</span>}
+        <input type='text' name='NIC' value={formData.NIC} onChange={handleChange} placeholder='Enter your NIC' />
+        {errors.NIC && <span className='error'>{errors.NIC}</span>}
 
         <label>Gender</label>
         <select name='gender' value={formData.gender} onChange={handleChange}>
@@ -97,22 +150,33 @@ export default function AppointmentForm() {
         <select name='department' value={formData.department} onChange={handleChange}>
           <option value=''>Select</option>
           {departments.map((dept) => (
-            <option key={dept} value={dept}>{dept}</option>
+            <option key={dept._id} value={dept._id}>{dept.name}</option>
           ))}
         </select>
         {errors.department && <span className='error'>{errors.department}</span>}
-
+        
         <label>Preferred Doctor</label>
-        <select name='doctor' value={formData.doctor} onChange={handleChange} disabled={!formData.department}>
+        <select
+          name='doctor'
+          value={formData.doctor}
+          onChange={handleChange}
+          disabled={!formData.department}
+        >
           <option value=''>Select</option>
-          {formData.department && doctors[formData.department]?.map((doc) => (
-            <option key={doc} value={doc}>{doc}</option>
-          ))}
+          {doctors
+            .filter(doc => doc.department && doc.department._id === formData.department)
+            .map(doc => (
+              <option key={doc._id} value={doc._id}>{doc.firstName} {doc.lastName}</option>
+            ))}
         </select>
         {errors.doctor && <span className='error'>{errors.doctor}</span>}
+
+        <label>Address</label>
+        <input type='text' name='address' value={formData.address} onChange={handleChange} placeholder='Enter your address' />
+        {errors.address && <span className='error'>{errors.address}</span>}
 
         <button type='submit'>Book Appointment</button>
       </form>
     </div>
   );
-}
+} 
