@@ -22,6 +22,8 @@ export default function AdminDashboard() {
   const [doctorsCount, setDoctorsCount] = useState(0);
   const [appointments, setAppointments] = useState([]);
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [availableDepartments, setAvailableDepartments] = useState([]);
+  const [availableDoctors, setAvailableDoctors] = useState([]);
   const [filters, setFilters] = useState({
     startDate: "",
     endDate: "",
@@ -38,22 +40,31 @@ export default function AdminDashboard() {
           patientRes,
           doctorRes,
           appRes,
+          allDepartments,
+          allDoctors
         ] = await Promise.all([
           axios.get("http://localhost:5000/api/departments/count"),
           axios.get("http://localhost:5000/api/patients/count"),
           axios.get("http://localhost:5000/api/doctors/count"),
           axios.get("http://localhost:5000/api/appointments"),
+          axios.get("http://localhost:5000/api/departments"),
+          axios.get("http://localhost:5000/api/doctors")
         ]);
+
         setDepartmentsCount(deptRes.data.count);
-        setPatientsCount(patientRes.data.count);
+        setPatientsCount(patientRes.data.totalPatients); // corrected in last step
         setDoctorsCount(doctorRes.data.count);
         setAppointments(appRes.data);
+        setAvailableDepartments(allDepartments.data);
+        setAvailableDoctors(allDoctors.data);
       } catch (err) {
         console.error("Error fetching data:", err);
       }
     };
+
     fetchAll();
   }, []);
+
 
   const handleFilterChange = (e) =>
     setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -100,28 +111,49 @@ export default function AdminDashboard() {
               <div className="card"><FaUserDoctor /><h3>Total Doctors</h3><p>{doctorsCount}</p></div>
             </div>
 
-            <div className="filters">
-              <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange}/>
-              <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange}/>
-              <select name="doctor" value={filters.doctor} onChange={handleFilterChange}>
-                <option value="">All Doctors</option>
-                {appointments.map(app => (
-                  <option key={app.doctor._id}>{app.doctor.firstName + " " + app.doctor.lastName}</option>
-                ))}
-              </select>
-              <select name="department" value={filters.department} onChange={handleFilterChange}>
-                <option value="">All Departments</option>
-                {departmentsCount && appointments.map(app => (
-                  <option key={app.department._id}>{app.department.name}</option>
-                ))}
-              </select>
-              <select name="status" value={filters.status} onChange={handleFilterChange}>
-                <option value="">All Status</option>
-                <option>pending</option>
-                <option>completed</option>
-                <option>cancelled</option>
-              </select>
+            <div className="admin-filters">
+              <div className="filter-item">
+                <label>Start Date</label>
+                <input type="date" name="startDate" value={filters.startDate} onChange={handleFilterChange} />
+              </div>
+
+              <div className="filter-item">
+                <label>End Date</label>
+                <input type="date" name="endDate" value={filters.endDate} onChange={handleFilterChange} />
+              </div>
+
+              <div className="filter-item">
+                <label>Doctor</label>
+                <select name="doctor" value={filters.doctor} onChange={handleFilterChange}>
+                  <option value="">All Doctors</option>
+                  {availableDoctors.map(doc => (
+                    <option key={doc._id}>{doc.firstName + " " + doc.lastName}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="filter-item">
+                <label>Department</label>
+                <select name="department" value={filters.department} onChange={handleFilterChange}>
+                  <option value="">All Departments</option>
+                  {availableDepartments.map(dept => (
+                    <option key={dept._id}>{dept.name}</option>
+                  ))}
+                </select>
+              </div>
+
+
+              <div className="filter-item">
+                <label>Status</label>
+                <select name="status" value={filters.status} onChange={handleFilterChange}>
+                  <option value="">All Status</option>
+                  <option>pending</option>
+                  <option>completed</option>
+                  <option>cancelled</option>
+                </select>
+              </div>
             </div>
+
 
             <div className="filter-buttons">
               <button onClick={resetFilters}>Reset Filters</button>

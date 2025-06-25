@@ -69,48 +69,51 @@ nav li a:hover {
 .navbar-dropdown {
     position: relative;
     cursor: pointer;
-
-
 }
 
 .navbar-dropdown-heading {
     display: flex;
     align-items: center;
-    
 }
 
 .navbar-dropdown-content {
     position: absolute;
     background-color: white;
-    transition: background 1s ease, transform 0.5s ease;
+    transition: all 0.3s ease;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     top: 40px;
     right: 0;
     border-radius: 5px;
     display: none;
-}
-
-.navbar-dropdown-content a,
-.navbar-dropdown-content button{
-    text-decoration: none;
-    color: #8c8b8b;
-    font-size: 14px;
-    padding: 5px 15px;
-    display: block;
-    border: none;
+    width: 180px; /* ⬅️ Increase width */
+    padding: 10px 0; /* Add vertical space */
+    flex-direction: column;
 }
 
 .navbar-dropdown:hover .navbar-dropdown-content,
 .navbar-dropdown:hover .navbar-dropdown-arrow {
-
-    display: block;
+    display: flex;
 }
 
-.navbar-dropdown-content a:hover,
-.navbar-dropdown-content button:hover {
+/* Common style for both buttons and links */
+.navbar-dropdown-content .dropdown-item {
+    text-decoration: none;
+    color: #8c8b8b;
+    font-size: 14px;
+    padding: 10px 20px;
+    display: block;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect for both */
+.navbar-dropdown-content .dropdown-item:hover {
     color: white;
-    font-weight: bolder;
-    border-radius: 5px;
+    font-weight: bold;
     background: linear-gradient(to right, #1f78b4, #13cec8);
-    transform: scale(1.05);
+    transform: scale(1.03);
+    border-radius: 5px;
 }

@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 const authenticateUser = require('../middlewares/authMiddleware');
-const Patient = require('../models/PatientSchema');
 const UserModel = require('../models/UserSchema');
 
 // ----------------------------

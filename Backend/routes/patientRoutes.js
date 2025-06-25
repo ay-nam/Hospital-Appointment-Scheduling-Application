@@ -5,20 +5,19 @@ const Patient = require('../models/PatientSchema');
 // routes/patientRoutes.js
 router.get('/basic', async (req, res) => {
     try {
-        const patients = await Patient.find().populate('department', 'name');
+        const patients = await Patient.find();
         const result = patients.map(p => ({
             id: p._id,
             name: `${p.firstName} ${p.lastName}`,
-            phone: p.mobile,
-            email: p.email,
-            department: p.department?.name || "N/A"
+            NIC: p.NIC,
+            dob: p.dob,
+            gender: p.gender
         }));
         res.json(result);
     } catch (err) {
         res.status(500).json({ error: "Failed to fetch patients" });
     }
 });
-
 
 router.get('/count', async (req, res) => {
     try {

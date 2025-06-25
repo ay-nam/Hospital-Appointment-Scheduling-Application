@@ -3,27 +3,20 @@ const router = express.Router();
 const Report = require('../models/PatientReportSchema');
 
 
-// Create or update a report for a specific appointment
-// router.post('/:appointmentId', async (req, res) => {
-//     const { appointmentId } = req.params;
-//     const data = req.body;
-
-//     try {
-//         let report = await PatientReport.findOne({ appointmentId });
-
-//         if (report) {
-//             Object.assign(report, data);
-//             await report.save();
-//             return res.json({ message: "Report updated successfully", report });
-//         }
-
-//         report = new PatientReport({ appointmentId, ...data });
-//         await report.save();
-//         res.status(201).json({ message: "Report created successfully", report });
-//     } catch (err) {
-//         res.status(500).json({ error: err.message });
-//     }
-// });
+// GET /api/reports/:appointmentId
+router.get('/:appointmentId', async (req, res) => {
+    try {
+      const report = await Report.findOne({ appointmentId: req.params.appointmentId })
+        .populate('patientId', 'firstName lastName NIC')
+        .populate('doctorId', 'firstName lastName email');
+  
+      if (!report) return res.status(404).json({ message: "No report found for this appointment" });
+  
+      res.json(report);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });  
 
 
 // routes/reportRoutes.js

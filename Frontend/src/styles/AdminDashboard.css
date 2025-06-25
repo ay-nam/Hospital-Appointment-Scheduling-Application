@@ -92,11 +92,11 @@
 
 
 /* Filters Section */
-.filters {
+.admin-filters {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     padding: 20px;
 }
 

@@ -55,11 +55,12 @@ export default function Navbar() {
                 <div className='navbar-dropdown-content'>
                     {!user ? (
                         <>
-                            <Link to='/login'>Login</Link>
+                            <Link to='/login' className="dropdown-item">Login</Link>
                         </>
                     ) : (
                         <>
-                            <button onClick={handleLogout} className="logout-button">Logout</button>
+                            <Link to='/user-appointments' className="dropdown-item">My Appointments</Link>
+                            <button onClick={handleLogout} className="dropdown-item">Logout</button>
                         </>
                     )}
                 </div>
