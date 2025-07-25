@@ -5,20 +5,47 @@ import cardiology from '../assets/cardiology.jpg';
 import neurology from '../assets/neurology.jpg';
 import pediatrics from '../assets/pediatrics.jpg';
 import orthopedics from '../assets/orthopedics.jpg';
+import Swal from 'sweetalert2';
+import axios from 'axios';
+
 
 const Home = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    subject: '',
+    mobile: '',
     message: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(formData);
-  };
+    try {
+      const res = await axios.post("http://localhost:5000/api/contact", formData);
+  
+      Swal.fire({
+        icon: 'success',
+        title: 'Message Sent!',
+        text: 'Your message has been submitted successfully.',
+        confirmButtonColor: '#3dc4d8'
+      });
+  
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        mobile: '',
+        message: ''
+      });
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops!',
+        text: err.response?.data?.message || 'Something went wrong. Please try again.',
+        confirmButtonColor: '#ff6b6b'
+      });
+    }
+  };  
 
   return (
     <div className="home-container">
@@ -46,7 +73,7 @@ const Home = () => {
             <p>Expert care for heart-related conditions</p>
           </div> */}
           <div className="department-card">
-            <img src={neurology}alt="Neurology" />
+            <img src={neurology} alt="Neurology" />
             <h3>Neurology</h3>
             <p>Specialized treatment for neurological disorders</p>
           </div>
@@ -56,7 +83,7 @@ const Home = () => {
             <p>Comprehensive care for children</p>
           </div>
           <div className="department-card">
-            <img src={orthopedics}  alt="Orthopedics" />
+            <img src={orthopedics} alt="Orthopedics" />
             <h3>Orthopedics</h3>
             <p>Treatment for bone and joint conditions</p>
           </div>
@@ -69,27 +96,36 @@ const Home = () => {
           <div className="form-group">
             <input
               type="text"
-              placeholder="Your Name"
-              value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <input
-              type="email"
-              placeholder="Your Email"
-              value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              placeholder="First Name"
+              value={formData.firstName}
+              onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
               required
             />
           </div>
           <div className="form-group">
             <input
               type="text"
-              placeholder="Subject"
-              value={formData.subject}
-              onChange={(e) => setFormData({...formData, subject: e.target.value})}
+              placeholder="Last Name"
+              value={formData.lastName}
+              onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              placeholder="Mobile"
+              value={formData.mobile}
+              onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
               required
             />
           </div>
@@ -97,12 +133,13 @@ const Home = () => {
             <textarea
               placeholder="Your Message"
               value={formData.message}
-              onChange={(e) => setFormData({...formData, message: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               required
             ></textarea>
           </div>
           <button type="submit" className="submit-button">Send Message</button>
         </form>
+
       </div>
     </div>
   );

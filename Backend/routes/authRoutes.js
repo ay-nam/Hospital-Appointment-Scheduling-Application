@@ -20,10 +20,6 @@ router.post('/logout', authenticateUser, authController.logout);
 // Get Authenticated User Info
 router.get('/me', authenticateUser, authController.getUser);
 
-// Test Protected Route
-router.get('/protected-route', authenticateUser, (req, res) => {
-    res.json({ message: "Access granted", user: req.user });
-});
 
 // Get Patient ID using logged-in user's email (used in appointments)
 router.get('/user-id', authenticateUser, async (req, res) => {
@@ -34,6 +30,16 @@ router.get('/user-id', authenticateUser, async (req, res) => {
     }
   });
   
+// ✅ Get All Users (No adminOnly restriction)
+router.get('/users', async (req, res) => {
+  try {
+    const users = await UserModel.find().select('-password');
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
 
 // Get User by ID (e.g., /api/auth/684ed7564db0a41335d4e815)
 router.get('/:id', async (req, res) => {
@@ -48,11 +54,23 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.get('/me', authenticateUser, (req, res) => {
-    res.json({
-      message: 'Authenticated user',
-      user: req.user
-    });
-  });
+
+
+
+// ✅ Toggle Active Status (No adminOnly restriction)
+router.patch('/users/:id/status', async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    user.active = !user.active;
+    await user.save();
+
+    res.json({ message: `User ${user.active ? 'activated' : 'deactivated'} successfully`, user });
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating user status', error: err.message });
+  }
+});
+
 
 module.exports = router;

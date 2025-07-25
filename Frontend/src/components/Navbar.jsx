@@ -1,30 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import '../styles/Navbar.css';
 
 export default function Navbar() {
+    const { user, setUser } = useAuth();
     const navigate = useNavigate();
-    const [user, setUser] = useState(null); // Track logged-in user
-
-    // Fetch user details from backend using cookies
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await axios.get('http://localhost:5000/api/auth/me', { withCredentials: true });
-                setUser(res.data.user); // Update user state
-            } catch (error) {
-                setUser(null); // No user is logged in
-            }
-        };
-        fetchUser();
-    }, []);
 
     const handleLogout = async () => {
         try {
             await axios.post('http://localhost:5000/api/auth/logout', {}, { withCredentials: true });
-            setUser(null); // Reset user state
-            navigate('/'); // Redirect to home
+            setUser(null);
+            navigate('/');
         } catch (error) {
             console.error('Logout failed:', error.response?.data?.message || error.message);
         }
@@ -54,16 +42,18 @@ export default function Navbar() {
 
                 <div className='navbar-dropdown-content'>
                     {!user ? (
-                        <>
-                            <Link to='/login' className="dropdown-item">Login</Link>
-                        </>
+                        <Link to='/login' className="dropdown-item">Login</Link>
                     ) : (
                         <>
-                            <Link to='/user-appointments' className="dropdown-item">My Appointments</Link>
+                            {user.role === 'user' && (
+                                <Link to='/user-appointments' className="dropdown-item">My Appointments</Link>
+                            )}
                             <button onClick={handleLogout} className="dropdown-item">Logout</button>
                         </>
                     )}
                 </div>
+
+
 
             </div>
         </nav>

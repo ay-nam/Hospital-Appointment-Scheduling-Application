@@ -1,22 +1,54 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/AddDoctorForm.css';
+import Swal from 'sweetalert2';
+
 
 export default function AddDoctorForm() {
+  const navigates = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
+
+  // 🚫 Redirect if no email passed
+  useEffect(() => {
+    if (!email) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Unauthorized',
+        text: 'Please sign up as a doctor first.',
+        confirmButtonColor: '#3085d6'
+      }).then(() => {
+        navigates('/signup');
+      });
+    }
+  }, [email, navigates]);
+
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     dob: '',
     gender: '',
-    specialization: '',
+    mobile: '',
     experience: '',
     qualification: '',
     licenseNumber: '',
+    department: '',
     profileImage: null,
     medicalCertificate: null,
   });
 
+
+  const [departments, setDepartments] = useState([]);
   const [errors, setErrors] = useState({});
-  const specializations = ['Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'Dermatology', 'General Medicine'];
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/departments')
+      .then(res => setDepartments(res.data))
+      .catch(err => console.error('Error fetching departments:', err));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,24 +68,54 @@ export default function AddDoctorForm() {
     if (!formData.lastName) newErrors.lastName = 'Last name is required';
     if (!formData.dob) newErrors.dob = 'Date of Birth is required';
     if (!formData.gender) newErrors.gender = 'Please select a gender';
-    if (!formData.specialization) newErrors.specialization = 'Please select a specialization';
+    if (!formData.mobile) newErrors.mobile = 'Mobile number is required';
     if (!formData.experience || formData.experience < 1) newErrors.experience = 'Experience must be at least 1 year';
     if (!formData.qualification) newErrors.qualification = 'Qualification is required';
     if (!formData.licenseNumber) newErrors.licenseNumber = 'License number is required';
     if (!formData.profileImage) newErrors.profileImage = 'Profile image is required';
     if (!formData.medicalCertificate) newErrors.medicalCertificate = 'Medical registration certificate is required';
+    if (!formData.department) newErrors.department = 'Please select a department';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      alert('Doctor Added Successfully!');
-      console.log('Doctor Data:', formData);
+    if (!validateForm()) return;
+
+    const doctorData = new FormData();
+    for (let key in formData) {
+      doctorData.append(key, formData[key]);
+    }
+
+    // Add email manually
+    doctorData.append('email', email);
+
+    try {
+      await axios.post('http://localhost:5000/api/doctors', doctorData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true
+      });
+      Swal.fire({
+        icon: 'success',
+        title: 'Doctor Added Successfully',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      navigate('/admin-dashboard');
+
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed to add Doctor',
+        showConfirmButton: false,
+        timer: 1500
+      });
     }
   };
+
 
   return (
     <div className='doctor-form-container'>
@@ -81,14 +143,25 @@ export default function AddDoctorForm() {
         </select>
         {errors.gender && <span className='error'>{errors.gender}</span>}
 
-        <label>Specialization</label>
-        <select name='specialization' value={formData.specialization} onChange={handleChange}>
-          <option value=''>Select</option>
-          {specializations.map((spec) => (
-            <option key={spec} value={spec}>{spec}</option>
+        <label>Mobile Number</label>
+        <input
+          type='tel'
+          name='mobile'
+          value={formData.mobile}
+          onChange={handleChange}
+          placeholder='Enter mobile number'
+        />
+        {errors.mobile && <span className='error'>{errors.mobile}</span>}
+
+
+        <label>Department</label>
+        <select name='department' value={formData.department} onChange={handleChange}>
+          <option value=''>Select Department</option>
+          {departments.map(dept => (
+            <option key={dept._id} value={dept._id}>{dept.name}</option>
           ))}
         </select>
-        {errors.specialization && <span className='error'>{errors.specialization}</span>}
+        {errors.department && <span className='error'>{errors.department}</span>}
 
         <label>Experience (Years)</label>
         <input type='number' name='experience' value={formData.experience} onChange={handleChange} placeholder='Enter years of experience' />

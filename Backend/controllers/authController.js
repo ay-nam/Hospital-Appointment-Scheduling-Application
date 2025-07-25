@@ -6,42 +6,37 @@ const jwt = require('jsonwebtoken');
 const authController = {
     signup: async (req, res) => {
         try {
-            const { name, email, password, role } = req.body;
-
-            const existingUser = await UserModel.findOne({ email });
-            if (existingUser) {
-                return res.status(400).json({ message: 'User already exists' });
+          const { name, email, password, role } = req.body;
+      
+          const existingUser = await UserModel.findOne({ email });
+          if (existingUser) {
+            return res.status(400).json({ message: 'User already exists' });
+          }
+      
+          const hashedPassword = await bcrypt.hash(password, 10);
+      
+          const newUser = await UserModel.create({
+            name,
+            email,
+            password: hashedPassword,
+            role: role || 'user'
+          });
+      
+          // ❌ Do not create a Patient here
+      
+          res.status(201).json({
+            message: 'User registered successfully',
+            user: {
+              id: newUser._id,
+              name: newUser.name,
+              email: newUser.email,
+              role: newUser.role
             }
-
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            const newUser = await UserModel.create({
-                name,
-                email,
-                password: hashedPassword,
-                role: role || 'user'
-            });
-
-            // Also create a corresponding Patient document
-            await Patient.create({
-                name,
-                email
-                // Add more patient fields if required
-            });
-
-            res.status(201).json({
-                message: 'User registered successfully',
-                user: {
-                    id: newUser._id,
-                    name: newUser.name,
-                    email: newUser.email,
-                    role: newUser.role
-                }
-            });
+          });
         } catch (error) {
-            res.status(500).json({ message: 'Server error', error: error.message });
+          res.status(500).json({ message: 'Server error', error: error.message });
         }
-    },
+      },
 
     login: async (req, res) => {
         try {

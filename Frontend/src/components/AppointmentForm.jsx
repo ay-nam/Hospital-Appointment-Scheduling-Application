@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import '../styles/AppointmentForm.css';
 import axios from 'axios';
 import { getUserIdFromToken } from '../utils/auth';
+import Swal from 'sweetalert2';
+
 
 export default function AppointmentForm() {
   const [formData, setFormData] = useState({
@@ -75,9 +77,14 @@ export default function AppointmentForm() {
     if (validateForm()) {
       try {
         if (!userId) {
-          alert("User not logged in. Please log in again.");
+          Swal.fire({
+            icon: 'error',
+            title: 'User not logged in',
+            text: 'Please log in again.',
+          });
           return;
         }
+  
         const response = await axios.post('http://localhost:5000/api/appointments', {
           ...formData,
           appointmentDate: new Date().toISOString(),
@@ -85,9 +92,13 @@ export default function AppointmentForm() {
           gender: formData.gender.toLowerCase(),
           uploadedBy: userId
         }, { withCredentials: true });
-        alert('Appointment Scheduled Successfully :)');
-        console.log('Appointment Data:', response.data);
-
+  
+        Swal.fire({
+          icon: 'success',
+          title: 'Appointment Scheduled!',
+          text: 'Your appointment has been booked successfully.',
+        });
+  
         setFormData({
           firstName: '',
           lastName: '',
@@ -100,13 +111,18 @@ export default function AppointmentForm() {
           doctor: '',
           address: ''
         });
-      }
-      catch (error) {
+  
+      } catch (error) {
         console.error("Failed to schedule Appointment:", error.response?.data || error.message);
-        alert('Failed to schedule Appointment. Please try again later :(');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'Failed to schedule appointment. Please try again later.',
+        });
       }
-    };
+    }
   };
+  
 
   return (
     <div className='appointment-container'>

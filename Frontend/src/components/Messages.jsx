@@ -1,25 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Messages.css";
+import axios from "axios";
 
 export default function Messages() {
-  // Dummy messages data
-  const [messages] = useState([
-    { id: 1, name: "John Doe", email: "john@gmail.com", message: "I need an appointment with Dr. Smith.", date: "2025-03-10" },
-    { id: 2, name: "Jane Smith", email: "jane@gmail.com", message: "Is the cardiology department available this week?", date: "2025-03-11" },
-    { id: 3, name: "Michael Johnson", email: "michael@gmail.com", message: "I want to reschedule my appointment.", date: "2025-03-12" }
-  ]);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
+  const fetchMessages = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/contact");
+      setMessages(res.data);
+    } catch (err) {
+      console.error("Error fetching messages:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="messages-container">
       <h2>Messages</h2>
       <div className="messages-list">
-        {messages.length > 0 ? (
+        {loading ? (
+          <p>Loading messages...</p>
+        ) : messages.length > 0 ? (
           messages.map((msg) => (
-            <div key={msg.id} className="message-card">
-              <h3>{msg.name}</h3>
+            <div key={msg._id} className="message-card">
+              <h3>{msg.firstName} {msg.lastName}</h3>
               <p><strong>Email:</strong> {msg.email}</p>
+              <p><strong>Mobile:</strong> {msg.mobile}</p>
               <p><strong>Message:</strong> {msg.message}</p>
-              <p><strong>Date:</strong> {msg.date}</p>
+              <p><strong>Date:</strong> {new Date(msg.createdAt).toLocaleDateString()}</p>
             </div>
           ))
         ) : (

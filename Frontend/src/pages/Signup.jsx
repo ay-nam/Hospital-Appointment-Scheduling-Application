@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../styles/Signup.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ export default function Signup() {
     name: '',
     email: '',
     password: '',
-    role: 'user'  
+    role: 'user'
   });
 
   const [error, setError] = useState('');
@@ -31,11 +32,22 @@ export default function Signup() {
     try {
       const response = await axios.post('http://localhost:5000/api/auth/signup', formData);
       if (response.data) {
-        alert('Registration successful!');
-        navigate('/login');
+        Swal.fire({
+          icon: 'success',
+          title: 'Registration Successful!',
+          text: 'You can now login.',
+          confirmButtonColor: '#3085d6'
+        }).then(() => {
+          navigate('/login');
+        });
       }
     } catch (error) {
-      setError(error.response?.data?.message || 'Registration failed');
+      Swal.fire({
+        icon: 'error',
+        title: 'Registration Failed',
+        text: error.response?.data?.message || 'Something went wrong',
+        confirmButtonColor: '#d33'
+      });
     }
   };
 
@@ -44,7 +56,7 @@ export default function Signup() {
       <div className='signup-container'>
         <h1>MediCare Medical Institute</h1>
         <h2>Signup</h2>
-        {error && <div className="error-message">{error}</div>}
+
         <form onSubmit={handleSubmit}>
           <label htmlFor='name'>Name</label>
           <input
@@ -56,6 +68,7 @@ export default function Signup() {
             onChange={handleChange}
             required
           />
+
           <label htmlFor='email'>Email</label>
           <input
             type='email'
@@ -66,6 +79,7 @@ export default function Signup() {
             onChange={handleChange}
             required
           />
+
           <label htmlFor='password'>Password</label>
           <input
             type={showPassword ? 'text' : 'password'}
@@ -76,9 +90,8 @@ export default function Signup() {
             onChange={handleChange}
             required
           />
-        </form>
-        <div className='signup-password-toggle'>
-          <div className='signup-password'>
+
+          <div className='signup-password-toggle'>
             <input
               type='checkbox'
               id='show-password'
@@ -86,9 +99,10 @@ export default function Signup() {
             />
             <label htmlFor='show-password'>Show Password</label>
           </div>
-        </div>
 
-        <button onClick={handleSubmit}>Sign Up</button>
+          <button type="submit">Sign Up</button>
+        </form>
+
         <div className="login-link">
           Already have an account? <a href="/login">Login here</a>
         </div>
