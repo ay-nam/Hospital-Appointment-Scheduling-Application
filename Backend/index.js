@@ -10,6 +10,7 @@ const appointmentRoutes = require('./routes/appointmentRoutes');
 const patientRoutes = require('./routes/patientRoutes'); 
 const reportRoutes = require('./routes/reportRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 const path = require('path');
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/api/appointments',appointmentRoutes);
 app.use('/api/patients', patientRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/contact',contactRoutes);
+app.use('/api', chatRoutes);
 
 app.get('/', (req, res) => {
     res.json({ message: 'Server is running' });

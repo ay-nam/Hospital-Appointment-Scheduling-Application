@@ -95,6 +95,8 @@ const authController = {
     },
 
     getUser: (req, res) => {
+        console.log('Authenticated user:', req.user);
+
         if (!req.user) {
             return res.status(401).json({ message: "Not authenticated" });
         }

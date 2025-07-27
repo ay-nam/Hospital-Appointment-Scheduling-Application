@@ -37,7 +37,6 @@ export default function DoctorDashboard() {
 
         fetchStats();
 
-        // Fetch appointment data for the table
         axios
             .get("http://localhost:5000/api/appointments")
             .then((response) => setAppointments(response.data))
@@ -67,7 +66,7 @@ export default function DoctorDashboard() {
 
     return (
         <>
-            {/* Doctor Header */}
+           
             <header className="doctor-header">
                 <nav>
                     <ul>
@@ -84,12 +83,12 @@ export default function DoctorDashboard() {
             {activeTab === "dashboard" && <DoctorAppointmentAnalysis />}
 
 
-            {/* Doctor Dashboard Content */}
+            
             {activeTab === "home" && (
                 <div className="doctor-dashboard">
                     <h1>Doctor Dashboard</h1>
 
-                    {/* Dashboard Cards */}
+                   
                     <div className="dashboard-cards">
                         <div className="card">
                             <FaUsers />
@@ -108,7 +107,7 @@ export default function DoctorDashboard() {
                         </div>
                     </div>
 
-                    {/* Filters Section */}
+                    
                     <div className="filters">
 
                         <div className="search-container">
@@ -146,7 +145,7 @@ export default function DoctorDashboard() {
                     </div>
 
 
-                    {/* Appointments Table */}
+                    
                     <div className="table-container">
                         <table>
                             <thead>

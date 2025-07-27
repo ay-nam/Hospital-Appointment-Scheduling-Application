@@ -1,12 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const Report = require('../models/PatientReportSchema');
+const PatientReport = require('../models/PatientReportSchema');
+
+router.get('/count', async (req, res) => {
+  try {
+      const totalReports = await PatientReport.countDocuments(); // or change to totalDoctors if needed
+      res.json({ totalReports });
+  } catch (error) {
+      res.status(500).json({ message: "Error counting reports", error: error.message });
+  }
+});
 
 
 // GET /api/reports/:appointmentId
 router.get('/:appointmentId', async (req, res) => {
     try {
-      const report = await Report.findOne({ appointmentId: req.params.appointmentId })
+      const report = await PatientReport.findOne({ appointmentId: req.params.appointmentId })
         .populate('patientId', 'firstName lastName NIC')
         .populate('doctorId', 'firstName lastName email');
   
@@ -43,14 +52,5 @@ router.get('/:appointmentId', async (req, res) => {
 //     }
 // });
 
-
-router.get('/count', async (req, res) => {
-    try {
-        const totalReports = await Report.countDocuments(); // or change to totalDoctors if needed
-        res.json({ totalReports });
-    } catch (error) {
-        res.status(500).json({ message: "Error counting reports", error: error.message });
-    }
-});
 
 module.exports = router;

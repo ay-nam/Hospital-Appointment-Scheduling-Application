@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter as  Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 
@@ -17,6 +17,7 @@ import AddDoctorForm from './pages/AddDoctorForm';
 import AdminDashboard from './pages/AdminDashboard';
 import DoctorDashboard from './pages/DoctorDashboard';
 import DoctorProfile from './components/DoctorProfile';
+import ChatbotUI from './components/ChatbotUI';
 
 // Spinner component
 const Spinner = () => (
@@ -73,6 +74,7 @@ function App() {
         <Route path='about' element={<About />} />
         <Route path='*' element={<Nopage />} />
       </Routes>
+      <ChatbotUI />
       {!isAuthPage && <Footer />}
     </div>
   );
